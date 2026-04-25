@@ -8,26 +8,34 @@ import java.util.List;
 public class EmployeeFreeTime {
 
     public static List<int[]> employeeFreetime(List<List<int[]>> schedule) {
+        if (schedule == null || schedule.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         List<int[]> merged = new ArrayList<>();
+        for (List<int[]> intervals : schedule) {
+            if (intervals != null) {
+                merged.addAll(intervals);
+            }
+        }
 
-        for (List<int[]> intervals : schedule)
-            merged.addAll(intervals);
+        if (merged.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-        Collections.sort(merged, (a, b) -> a[0] - b[0]);
+        Collections.sort(merged, (a, b) -> Integer.compare(a[0], b[0]));
 
         List<int[]> res = new ArrayList<>();
-
-        int[] prev = merged.getFirst();
+        int prevEnd = merged.get(0)[1];
 
         for (int i = 1; i < merged.size(); i++) {
             int[] curr = merged.get(i);
 
-            if (prev[1] >= curr[0]) {
-                prev[1] = Math.max(prev[1], curr[1]);
-            } else {
-                res.add(new int[]{prev[1], curr[0]});
-                prev = curr;
+            if (curr[0] > prevEnd) {
+                res.add(new int[]{prevEnd, curr[0]});
             }
+
+            prevEnd = Math.max(prevEnd, curr[1]);
         }
 
         return res;
