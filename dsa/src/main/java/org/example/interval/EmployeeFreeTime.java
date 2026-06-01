@@ -2,40 +2,36 @@ package org.example.interval;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class EmployeeFreeTime {
 
-    public static List<int[]> employeeFreetime(List<List<int[]>> schedule) {
+    public static List<int[]> employeeFreeTime(List<List<int[]>> schedule) {
         if (schedule == null || schedule.isEmpty()) {
             return new ArrayList<>();
         }
 
-        List<int[]> merged = new ArrayList<>();
-        for (List<int[]> intervals : schedule) {
-            if (intervals != null) {
-                merged.addAll(intervals);
-            }
-        }
-
-        if (merged.isEmpty()) {
-            return new ArrayList<>();
-        }
-
-        Collections.sort(merged, (a, b) -> Integer.compare(a[0], b[0]));
-
         List<int[]> res = new ArrayList<>();
-        int prevEnd = merged.get(0)[1];
 
-        for (int i = 1; i < merged.size(); i++) {
-            int[] curr = merged.get(i);
+        List<int[]> mergedIntervals = new ArrayList<>();
 
-            if (curr[0] > prevEnd) {
-                res.add(new int[]{prevEnd, curr[0]});
+        for (List<int[]> emp : schedule) {
+            mergedIntervals.addAll(emp);
+        }
+
+        mergedIntervals.sort((a, b) -> Integer.compare(a[0], b[0]));
+
+        int[] prev = mergedIntervals.getFirst();
+
+        for (int i = 1; i < mergedIntervals.size(); i++) {
+            int[] curr = mergedIntervals.get(i);
+
+            if (prev[1] > curr[0]) {
+                res.add(new int[]{prev[1], curr[0]});
+                prev = curr;
+            } else {
+                prev[1] = Math.max(prev[1], curr[1]);
             }
-
-            prevEnd = Math.max(prevEnd, curr[1]);
         }
 
         return res;
@@ -48,7 +44,7 @@ public class EmployeeFreeTime {
         schedule.add(Arrays.asList(new int[]{1, 3}));
         schedule.add(Arrays.asList(new int[]{4, 10}));
 
-        List<int[]> result = employeeFreetime(schedule);
+        List<int[]> result = employeeFreeTime(schedule);
 
         // Print output
 
